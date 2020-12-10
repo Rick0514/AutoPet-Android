@@ -15,9 +15,9 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 public class ClientSocket {
-
-    private final String ip_addr = "49.234.68.36";
-    private final int port = 8193;
+    // change to your owm server ip and port
+    private final String ip_addr = "xxx.xxx.xxx.xxx";
+    private final int port = xxxx;
     private SocketAddress s_addr = null;
 
     private Socket client = null;
