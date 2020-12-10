@@ -25,6 +25,7 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ClientSocket mClient = null;
 
+    private ImageView mcuIcon = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         mProgreeDialog = new ProgressDialog(this);
         initProgressDialog();
+
+        mcuIcon = findViewById(R.id.mcu);
 
         mIntentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         mNetworkChangleReceiver = new NetworkChangeReceiver();
@@ -69,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 'b':   {
                         Toast.makeText(MainActivity.this, "TCP is break", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case 'c':   {
+                        Toast.makeText(MainActivity.this, "MCU is connected", Toast.LENGTH_SHORT).show();
+                        mcuIcon.setBackground(getResources().getDrawable(R.drawable.ic_mcu));
+                        break;
+                    }
+                    case 'd':   {
+                        Toast.makeText(MainActivity.this, "MCU is disconnected", Toast.LENGTH_SHORT).show();
+                        mcuIcon.setBackground(getResources().getDrawable(R.drawable.ic_break));
                         break;
                     }
                 }
@@ -95,6 +109,25 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.sendMessage(msg);
             }
         });
+
+        mClient.setMcuConnectListener(new ClientSocket.MCUConnectListener() {
+            @Override
+            public void onMCUConnected() {
+                Message msg = new Message();
+                msg.arg1 = 2;
+                msg.what = 'c';
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onMCUDisconnected() {
+                Message msg = new Message();
+                msg.arg1 = 3;
+                msg.what = 'd';
+                mHandler.sendMessage(msg);
+            }
+        });
+
     }
 
     @Override

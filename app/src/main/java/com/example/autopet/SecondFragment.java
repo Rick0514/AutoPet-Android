@@ -108,6 +108,7 @@ public class SecondFragment extends Fragment {
     }
 
     private void initDatas(){
+        mDatas.clear();
         Map map1 = new HashMap();
         map1.put("icon", R.drawable.ic_temp);
         map1.put("value", "receiving...");

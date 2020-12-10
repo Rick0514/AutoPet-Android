@@ -27,11 +27,10 @@ public class ClientSocket {
     private boolean connectStatus;
     private ConnectStatusListener mConnectStatusListener = null;
 
-    private int lostTcpNum = 0;
-    private byte[] lock = new byte[0];
-
     private String[] ws = new String[2];
     private ReadWSListener mReadWSListener = null;
+
+    private MCUConnectListener mcuConnectListener = null;
 
     // single instance
     private static final ClientSocket instance = new ClientSocket();
@@ -122,7 +121,7 @@ public class ClientSocket {
                 mDOS.close();
             }
             if (client != null) client.close();
-            lostTcpNum = 0;
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
             return false;
@@ -154,6 +153,13 @@ public class ClientSocket {
 //                    if(str.equals("tcp")){
 //                        synchronized (lock){lostTcpNum = 0;}
 //                    }
+                    if(str.equals("mcu")){
+                        mcuConnectListener.onMCUConnected();
+                    }
+                    if(str.equals("dmcu")){
+                        mcuConnectListener.onMCUDisconnected();
+                    }
+
                     if(str.charAt(0) == 'w'){
                         ws[0] = str.substring(1);
                         mReadWSListener.OnReadWS();
@@ -173,14 +179,6 @@ public class ClientSocket {
             @Override
             public void run() {
                 while (connectStatus){
-//                    synchronized (lock){
-//                        lostTcpNum++;
-//                        Log.i("lock", "lockNum: " + lostTcpNum);
-//                    }
-//                    if(lostTcpNum > 5){
-//                        connectStatus = false;
-//                        resetClient();
-//                    }
                     try {
                         Thread.sleep(2000);
                         sendData("@tcp#");
@@ -203,6 +201,10 @@ public class ClientSocket {
         mReadWSListener = mListener;
     }
 
+    public void setMcuConnectListener(MCUConnectListener mListener){
+        mcuConnectListener = mListener;
+    }
+
     static public interface ConnectStatusListener
     {
         public void OnConnectTCP();
@@ -212,6 +214,11 @@ public class ClientSocket {
     static public interface ReadWSListener
     {
         public void OnReadWS();
+    }
+
+    static public interface MCUConnectListener{
+        public void onMCUConnected();
+        public void onMCUDisconnected();
     }
 
     public String[] getWS(){return ws;}
