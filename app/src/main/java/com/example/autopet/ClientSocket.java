@@ -53,15 +53,15 @@ public class ClientSocket {
             initDataStream();
             sendData("@and#");
         } catch (UnknownHostException e) {
-            Log.e("setupTCP", e.toString());
+//            Log.e("setupTCP", e.toString());
             return;
         } catch (IOException e) {
-            Log.e("setupTCP", e.toString());
+//            Log.e("setupTCP", e.toString());
             return;
         } catch (Exception e){
             return;
         }
-        Log.i("setupTCP", "connected!!");
+//        Log.i("setupTCP", "connected!!");
         connectStatus = true;
         mConnectStatusListener.OnConnectTCP();
     }
@@ -73,10 +73,10 @@ public class ClientSocket {
                 InputStream is = client.getInputStream();
                 mDIS = new BufferedReader(new InputStreamReader(is));
             } catch (UnknownHostException e) {
-                Log.e("DataStream", e.toString());
+//                Log.e("DataStream", e.toString());
                 return;
             } catch (IOException e) {
-                Log.e("DataStream", e.toString());
+//                Log.e("DataStream", e.toString());
                 return;
             }
         }
@@ -89,10 +89,10 @@ public class ClientSocket {
         try {
             mDOS.writeBytes(str);
         } catch (UnknownHostException e) {
-            Log.e("senddata", e.toString());
+//            Log.e("senddata", e.toString());
             return false;
         } catch (IOException e) {
-            Log.e("senddata", e.toString());
+//            Log.e("senddata", e.toString());
             return false;
         }
         return true;
@@ -104,10 +104,10 @@ public class ClientSocket {
             result = mDIS.readLine();
             if(result!=null)    result.replaceAll("\n","");
         } catch (UnknownHostException e) {
-            Log.e("readdata", e.toString());
+//            Log.e("readdata", e.toString());
             return null;
         } catch (IOException e) {
-            Log.e("readdata", e.toString());
+//            Log.e("readdata", e.toString());
             return null;
         }
         return result;
