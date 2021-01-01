@@ -10,9 +10,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +25,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.LogRecord;
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if ((id == R.id.action_settings) && (networkStatus) && (mClient.getConnectStatus() == false)) {
+        if ((id == R.id.settings_tcp) && (networkStatus) && (mClient.getConnectStatus() == false)) {
             mProgreeDialog.show();
             TCPThread = new Thread(new Runnable() {
                 @Override
@@ -162,6 +161,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             TCPThread.start();
+            return true;
+        }
+        if (id == R.id.settings_caltime){
+            if(networkStatus == false){
+                Toast.makeText(this, "当前网络不可用", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if(mClient.getConnectStatus() == false){
+                Toast.makeText(this, "TCP未连接", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            // send time
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            Date date = new Date(System.currentTimeMillis());
+            String caltime = "@st" + simpleDateFormat.format(date) + "#";
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mClient.sendData(caltime);
+                }
+            }).start();
             return true;
         }
 
